@@ -37,7 +37,7 @@ func PrintClosingMessage(name string, subjects *map[string]int) {
 
 	fmt.Println()
 	fmt.Println()
-	fmt.Printf("Average: %v", calculateAverage(subjects))
+	fmt.Printf("Average: %v", CalculateAverage(subjects))
 	fmt.Println()
 	fmt.Println()
 }
@@ -120,7 +120,11 @@ func getSubjectAndGrade(subjectNumber int, subjects *map[string]int) (string, in
 	return subjectName, grade
 }
 
-func calculateAverage(subjects *map[string]int) float32 {
+func CalculateAverage(subjects *map[string]int) float32 {
+	if len(*subjects) == 0 {
+		return 0
+	}
+
 	var sum float32
 	for _, grade := range *subjects {
 		sum += float32(grade)
