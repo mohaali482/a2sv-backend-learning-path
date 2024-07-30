@@ -1,28 +1,39 @@
 package pkg
 
-import (
-	"strings"
-)
+import "strings"
 
-func CountWords(str string) int {
-	str = strings.TrimSpace(str)
-	counter := 0
-	wordLength := 0
+func CountWords(str string) map[string]int {
+	str = CounterFormatString(str)
+	counter := make(map[string]int)
+	word := strings.Builder{}
 
-	for i := range len(str) {
-		if str[i] == ' ' {
-			if wordLength > 0 {
-				counter++
-				wordLength = 0
-			}
+	for _, r := range str {
+		if r == ' ' {
+			counter[word.String()]++
+			word.Reset()
 		} else {
-			wordLength++
+			word.WriteRune(r)
 		}
 	}
-
-	if wordLength > 0 {
-		counter++
+	if word.Len() > 0 {
+		counter[word.String()]++
 	}
 
 	return counter
+}
+
+func PalindromeCheck(str string) bool {
+	str = PalindromeFormatString(str)
+
+	left := 0
+	right := len(str) - 1
+	for left < right {
+		if str[left] != str[right] {
+			return false
+		}
+		left++
+		right--
+	}
+
+	return true
 }
