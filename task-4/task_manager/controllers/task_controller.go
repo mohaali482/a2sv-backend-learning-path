@@ -96,3 +96,19 @@ func DeleteTask(s data.TaskUseCase) gin.HandlerFunc {
 		})
 	}
 }
+
+func CreateTask(s data.TaskUseCase) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var task models.Task
+		if err := c.ShouldBindJSON(&task); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+
+		task = s.CreateTask(task)
+
+		c.JSON(http.StatusCreated, task)
+	}
+}
