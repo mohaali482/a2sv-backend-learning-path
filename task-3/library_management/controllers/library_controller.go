@@ -7,12 +7,15 @@ import (
 )
 
 type Library struct {
-	Books   map[int]models.Book
-	Members map[int]models.Member
+	NextBookID int
+	Books      map[int]models.Book
+	Members    map[int]models.Member
 }
 
 func (s *Library) AddBook(book models.Book) {
+	book.ID = s.NextBookID
 	s.Books[book.ID] = book
+	s.NextBookID++
 }
 
 func (s *Library) RemoveBook(bookID int) {
