@@ -12,6 +12,14 @@ type Library struct {
 	Members    map[int]models.Member
 }
 
+func NewLibrary() *Library {
+	return &Library{
+		NextBookID: 1,
+		Books:      make(map[int]models.Book),
+		Members:    make(map[int]models.Member),
+	}
+}
+
 func (s *Library) AddBook(book models.Book) {
 	book.ID = s.NextBookID
 	book.Status = "available"
@@ -25,7 +33,7 @@ func (s *Library) RemoveBook(bookID int) {
 
 func (s *Library) BorrowBook(bookID int, memberID int) error {
 	book, ok := s.Books[bookID]
-	if !ok {
+	if !ok || book.Status != "available" {
 		return errors.New("book is not available")
 	}
 
@@ -38,8 +46,10 @@ func (s *Library) BorrowBook(bookID int, memberID int) error {
 		s.Members[memberID] = member
 	}
 
-	member.BorrowedBooks = append(member.BorrowedBooks, book)
 	book.Status = "borrowed"
+	member.BorrowedBooks = append(member.BorrowedBooks, book)
+	s.Books[bookID] = book
+	s.Members[memberID] = member
 
 	return nil
 }
@@ -55,8 +65,9 @@ func (s *Library) ReturnBook(bookID int, memberID int) error {
 		return err
 	}
 
-	book := &member.BorrowedBooks[idx]
+	book := member.BorrowedBooks[idx]
 	book.Status = "available"
+	s.Books[bookID] = book
 	member.RemoveBook(idx)
 
 	return nil
