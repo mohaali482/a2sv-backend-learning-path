@@ -14,6 +14,7 @@ type Library struct {
 
 func (s *Library) AddBook(book models.Book) {
 	book.ID = s.NextBookID
+	book.Status = "available"
 	s.Books[book.ID] = book
 	s.NextBookID++
 }
@@ -38,6 +39,7 @@ func (s *Library) BorrowBook(bookID int, memberID int) error {
 	}
 
 	member.BorrowedBooks = append(member.BorrowedBooks, book)
+	book.Status = "borrowed"
 
 	return nil
 }
@@ -53,10 +55,9 @@ func (s *Library) ReturnBook(bookID int, memberID int) error {
 		return err
 	}
 
-	book := member.BorrowedBooks[idx]
+	book := &member.BorrowedBooks[idx]
+	book.Status = "available"
 	member.RemoveBook(idx)
-
-	s.Books[book.ID] = book
 
 	return nil
 }
@@ -65,16 +66,22 @@ func (s *Library) ListAvailableBooks() []models.Book {
 	availableBooks := make([]models.Book, 0)
 
 	for _, book := range s.Books {
-		availableBooks = append(availableBooks, book)
+		if book.Status == "available" {
+			availableBooks = append(availableBooks, book)
+		}
 	}
 
 	return availableBooks
 }
 
 func (s *Library) ListBorrowedBooks(memberID int) []models.Book {
-	if _, ok := s.Members[memberID]; !ok {
-		return []models.Book{}
+	borrowedBooks := make([]models.Book, 0)
+
+	for _, book := range s.Books {
+		if book.Status == "borrowed" {
+			borrowedBooks = append(borrowedBooks, book)
+		}
 	}
 
-	return s.Members[memberID].BorrowedBooks
+	return borrowedBooks
 }
