@@ -12,7 +12,7 @@ type TaskUseCase interface {
 	GetTaskById(id int) (*models.Task, error)
 	UpdateTask(id int, task models.Task) (*models.Task, error)
 	DeleteTask(id int) error
-	CreateTask(task models.Task)
+	CreateTask(task models.Task) models.Task
 }
 
 type TaskService struct {
@@ -85,7 +85,7 @@ func (s *TaskService) DeleteTask(id int) error {
 	return nil
 }
 
-func (s *TaskService) CreateTask(task models.Task) {
+func (s *TaskService) CreateTask(task models.Task) models.Task {
 	newTask := &models.Task{
 		Title: task.Title,
 		Done:  false,
@@ -99,4 +99,5 @@ func (s *TaskService) CreateTask(task models.Task) {
 
 	s.mu.Unlock()
 
+	return *newTask
 }
