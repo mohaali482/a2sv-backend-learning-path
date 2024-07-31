@@ -59,7 +59,7 @@ func UpdateTask(s data.TaskUseCase) gin.HandlerFunc {
 			return
 		}
 
-		updatedTask, err := s.UpdateTask(intId, task)
+		task, err = s.UpdateTask(intId, task)
 
 		if err != nil {
 			c.JSON(http.StatusNotFound, gin.H{
@@ -67,7 +67,7 @@ func UpdateTask(s data.TaskUseCase) gin.HandlerFunc {
 			})
 		}
 
-		c.JSON(http.StatusOK, updatedTask)
+		c.JSON(http.StatusOK, task)
 	}
 }
 
