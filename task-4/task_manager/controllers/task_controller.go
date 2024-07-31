@@ -70,3 +70,29 @@ func UpdateTask(s data.TaskUseCase) gin.HandlerFunc {
 		c.JSON(http.StatusOK, task)
 	}
 }
+
+func DeleteTask(s data.TaskUseCase) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		id := c.Param("id")
+
+		intId, err := strconv.Atoi(id)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "invalid id",
+			})
+			return
+		}
+
+		err = s.DeleteTask(intId)
+
+		if err != nil {
+			c.JSON(http.StatusNotFound, gin.H{
+				"error": "task not found",
+			})
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"message": "task deleted",
+		})
+	}
+}
