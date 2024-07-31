@@ -10,7 +10,7 @@ import (
 type TaskUseCase interface {
 	GetAllTasks() []*models.Task
 	GetTaskById(id int) (*models.Task, error)
-	UpdateTask(id int, task models.Task) (*models.Task, error)
+	UpdateTask(id int, task models.Task) (models.Task, error)
 	DeleteTask(id int) error
 	CreateTask(task models.Task) models.Task
 }
@@ -53,11 +53,11 @@ func (s *TaskService) GetTaskById(id int) (*models.Task, error) {
 	return task, nil
 }
 
-func (s *TaskService) UpdateTask(id int, task models.Task) (*models.Task, error) {
+func (s *TaskService) UpdateTask(id int, task models.Task) (models.Task, error) {
 	oldTask, err := s.GetTaskById(id)
 
 	if err != nil {
-		return &models.Task{}, err
+		return models.Task{}, err
 	}
 
 	s.mu.Lock()
@@ -67,7 +67,7 @@ func (s *TaskService) UpdateTask(id int, task models.Task) (*models.Task, error)
 
 	s.mu.Unlock()
 
-	return oldTask, nil
+	return *oldTask, nil
 }
 
 func (s *TaskService) DeleteTask(id int) error {
