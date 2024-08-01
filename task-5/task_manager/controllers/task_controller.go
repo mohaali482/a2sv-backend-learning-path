@@ -11,7 +11,7 @@ import (
 
 func GetAllTasks(s data.TaskUseCase) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.JSON(http.StatusOK, s.GetAllTasks())
+		c.JSON(http.StatusOK, s.GetAllTasks(c.Request.Context()))
 	}
 }
 
@@ -27,7 +27,7 @@ func GetTaskById(s data.TaskUseCase) gin.HandlerFunc {
 			return
 		}
 
-		task, err := s.GetTaskById(intId)
+		task, err := s.GetTaskById(c.Request.Context(), intId)
 
 		if err != nil {
 			c.JSON(http.StatusNotFound, gin.H{
@@ -59,7 +59,7 @@ func UpdateTask(s data.TaskUseCase) gin.HandlerFunc {
 			return
 		}
 
-		task, err = s.UpdateTask(intId, task)
+		task, err = s.UpdateTask(c.Request.Context(), intId, task)
 
 		if err != nil {
 			c.JSON(http.StatusNotFound, gin.H{
@@ -83,7 +83,7 @@ func DeleteTask(s data.TaskUseCase) gin.HandlerFunc {
 			return
 		}
 
-		err = s.DeleteTask(intId)
+		err = s.DeleteTask(c.Request.Context(), intId)
 
 		if err != nil {
 			c.JSON(http.StatusNotFound, gin.H{
@@ -107,7 +107,7 @@ func CreateTask(s data.TaskUseCase) gin.HandlerFunc {
 			return
 		}
 
-		task = s.CreateTask(task)
+		task = s.CreateTask(c.Request.Context(), task)
 
 		c.JSON(http.StatusCreated, task)
 	}
