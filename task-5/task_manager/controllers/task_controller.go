@@ -33,6 +33,7 @@ func GetTaskById(s data.TaskUseCase) gin.HandlerFunc {
 			c.JSON(http.StatusNotFound, gin.H{
 				"error": "task not found",
 			})
+			return
 		}
 
 		c.JSON(http.StatusOK, task)
@@ -65,6 +66,7 @@ func UpdateTask(s data.TaskUseCase) gin.HandlerFunc {
 			c.JSON(http.StatusNotFound, gin.H{
 				"error": "task not found",
 			})
+			return
 		}
 
 		c.JSON(http.StatusOK, task)
@@ -89,6 +91,7 @@ func DeleteTask(s data.TaskUseCase) gin.HandlerFunc {
 			c.JSON(http.StatusNotFound, gin.H{
 				"error": "task not found",
 			})
+			return
 		}
 
 		c.JSON(http.StatusOK, gin.H{
