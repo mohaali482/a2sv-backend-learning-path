@@ -1,6 +1,7 @@
 package data
 
 import (
+	"context"
 	"errors"
 	"sync"
 
@@ -8,11 +9,11 @@ import (
 )
 
 type TaskUseCase interface {
-	GetAllTasks() []*models.Task
-	GetTaskById(id int) (*models.Task, error)
-	UpdateTask(id int, task models.Task) (models.Task, error)
-	DeleteTask(id int) error
-	CreateTask(task models.Task) models.Task
+	GetAllTasks(ctx context.Context) []*models.Task
+	GetTaskById(ctx context.Context, id int) (*models.Task, error)
+	UpdateTask(ctx context.Context, id int, task models.Task) (models.Task, error)
+	DeleteTask(ctx context.Context, id int) error
+	CreateTask(ctx context.Context, task models.Task) models.Task
 }
 
 type TaskService struct {
@@ -29,7 +30,7 @@ func NewTaskService() *TaskService {
 	}
 }
 
-func (s *TaskService) GetAllTasks() []*models.Task {
+func (s *TaskService) GetAllTasks(ctx context.Context) []*models.Task {
 	s.mu.RLock()
 
 	tasks := make([]*models.Task, 0)
@@ -41,7 +42,7 @@ func (s *TaskService) GetAllTasks() []*models.Task {
 	return tasks
 }
 
-func (s *TaskService) GetTaskById(id int) (*models.Task, error) {
+func (s *TaskService) GetTaskById(ctx context.Context, id int) (*models.Task, error) {
 	s.mu.RLock()
 	task, ok := s.tasks[id]
 	s.mu.RUnlock()
@@ -53,8 +54,8 @@ func (s *TaskService) GetTaskById(id int) (*models.Task, error) {
 	return task, nil
 }
 
-func (s *TaskService) UpdateTask(id int, task models.Task) (models.Task, error) {
-	oldTask, err := s.GetTaskById(id)
+func (s *TaskService) UpdateTask(ctx context.Context, id int, task models.Task) (models.Task, error) {
+	oldTask, err := s.GetTaskById(ctx, id)
 
 	if err != nil {
 		return models.Task{}, err
@@ -70,8 +71,8 @@ func (s *TaskService) UpdateTask(id int, task models.Task) (models.Task, error) 
 	return *oldTask, nil
 }
 
-func (s *TaskService) DeleteTask(id int) error {
-	_, err := s.GetTaskById(id)
+func (s *TaskService) DeleteTask(ctx context.Context, id int) error {
+	_, err := s.GetTaskById(ctx, id)
 	if err != nil {
 		return err
 	}
@@ -85,7 +86,7 @@ func (s *TaskService) DeleteTask(id int) error {
 	return nil
 }
 
-func (s *TaskService) CreateTask(task models.Task) models.Task {
+func (s *TaskService) CreateTask(ctx context.Context, task models.Task) models.Task {
 	newTask := &models.Task{
 		Title: task.Title,
 		Done:  false,
