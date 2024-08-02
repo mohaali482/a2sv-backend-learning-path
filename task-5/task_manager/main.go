@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -17,6 +18,15 @@ func init() {
 	}
 }
 
+func getHost() string {
+	hostUrl := os.Getenv("HOST_URL")
+	if hostUrl != "" {
+		return hostUrl
+	}
+
+	return "localhost:8000"
+}
+
 func main() {
 	gin.ForceConsoleColor()
 
@@ -27,5 +37,5 @@ func main() {
 	s := data.NewMongoTaskService()
 	router.RegisterHandlers(r, s)
 
-	r.Run("localhost:8000")
+	r.Run(getHost())
 }
