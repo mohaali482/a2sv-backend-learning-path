@@ -77,6 +77,10 @@ func (s *MongoTaskService) GetTaskById(ctx context.Context, id int) (*models.Tas
 }
 
 func (s *MongoTaskService) UpdateTask(ctx context.Context, id int, task models.Task) (models.Task, error) {
+	if _, err := s.GetTaskById(ctx, id); err != nil {
+		return models.Task{}, errors.New("task not found")
+	}
+
 	collection := s.client.Database("taskManager").Collection("tasks")
 
 	_, err := collection.UpdateOne(ctx, bson.D{{Key: "id", Value: id}}, bson.D{{
