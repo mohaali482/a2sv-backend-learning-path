@@ -1,7 +1,13 @@
 package models
 
+import "time"
+
 type Task struct {
-	Id    int    `json:"id"`
-	Title string `json:"title"`
-	Done  bool   `json:"done"`
+	Id     string `json:"id" bson:"_id,omitempty"`
+	UserId string `json:"user_id"`
+
+	Title       string    `json:"title"`
+	Description string    `json:"description"`
+	DateTime    time.Time `json:"datetime"`
+	Done        bool      `json:"done"`
 }
