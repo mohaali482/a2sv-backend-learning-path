@@ -6,8 +6,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"github.com/mohaali482/a2sv-backend-learning-path/task-6/data"
+	"github.com/mohaali482/a2sv-backend-learning-path/task-6/data/mongodb"
 	"github.com/mohaali482/a2sv-backend-learning-path/task-6/router"
+	"github.com/mohaali482/a2sv-backend-learning-path/task-6/validator"
 )
 
 func init() {
@@ -30,12 +31,17 @@ func getHost() string {
 func main() {
 	gin.ForceConsoleColor()
 
+	c := mongodb.GetNewMongoClient()
+	ts := mongodb.NewMongoTaskService(c)
+	us := mongodb.NewMongoUserService(c)
+
 	r := gin.New()
+	validator.BindingValidator()
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
 
-	s := data.NewMongoTaskService()
-	router.RegisterHandlers(r, s)
+	router.RegisterTaskHandlers(r, ts, us)
+	router.RegisterUserHandlers(r, us)
 
 	r.Run(getHost())
 }
