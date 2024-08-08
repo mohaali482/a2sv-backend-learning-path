@@ -8,7 +8,7 @@ import (
 
 type Task struct {
 	Id          primitive.ObjectID `json:"id" bson:"_id,omitempty"`
-	UserId      primitive.ObjectID `json:"user_id"`
+	UserId      primitive.ObjectID `json:"user_id" bson:"user_id"`
 	Title       string             `json:"title"`
 	Description string             `json:"description"`
 	DateTime    time.Time          `json:"datetime"`
