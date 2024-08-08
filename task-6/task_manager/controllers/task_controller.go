@@ -153,7 +153,12 @@ func CreateTask(s data.TaskUseCase) gin.HandlerFunc {
 			return
 		}
 
-		task = s.CreateTask(c.Request.Context(), task)
+		task, err = s.CreateTask(c.Request.Context(), task)
+
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
 
 		c.JSON(http.StatusCreated, task)
 	}

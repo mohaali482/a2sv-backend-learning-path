@@ -17,5 +17,5 @@ type TaskUseCase interface {
 	GetUserTaskById(ctx context.Context, id string, userId string) (*models.Task, error)
 	UpdateTask(ctx context.Context, id string, task models.Task) (models.Task, error)
 	DeleteTask(ctx context.Context, id string) error
-	CreateTask(ctx context.Context, task models.Task) models.Task
+	CreateTask(ctx context.Context, task models.Task) (models.Task, error)
 }

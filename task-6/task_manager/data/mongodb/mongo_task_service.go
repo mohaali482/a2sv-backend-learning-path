@@ -103,6 +103,12 @@ func (s *MongoTaskService) GetTaskById(ctx context.Context, id string) (*models.
 }
 
 func (s *MongoTaskService) UpdateTask(ctx context.Context, id string, task models.Task) (models.Task, error) {
+	_, err := s.getUserByID(ctx, task.UserId.Hex())
+
+	if err != nil {
+		return models.Task{}, err
+	}
+
 	if _, err := s.GetTaskById(ctx, id); err != nil {
 		return models.Task{}, errors.New("task not found")
 	}
@@ -155,8 +161,35 @@ func (s *MongoTaskService) DeleteTask(ctx context.Context, id string) error {
 	return nil
 }
 
-func (s *MongoTaskService) CreateTask(ctx context.Context, task models.Task) models.Task {
+func (s *MongoTaskService) getUserByID(ctx context.Context, id string) (*models.User, error) {
+	collection := s.client.Database("taskManager").Collection("users")
+	userObjectId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, data.ErrInvalidUserId
+	}
+
+	var user models.User
+
+	err = collection.FindOne(ctx, bson.D{{Key: "_id", Value: userObjectId}}).Decode(&user)
+
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, data.ErrUserNotFound
+		} else {
+			log.Fatal(err)
+		}
+	}
+
+	return &user, nil
+}
+
+func (s *MongoTaskService) CreateTask(ctx context.Context, task models.Task) (models.Task, error) {
 	collection := s.client.Database("taskManager").Collection("tasks")
+	_, err := s.getUserByID(ctx, task.UserId.Hex())
+
+	if err != nil {
+		return models.Task{}, err
+	}
 
 	result, err := collection.InsertOne(ctx, task)
 
@@ -172,5 +205,5 @@ func (s *MongoTaskService) CreateTask(ctx context.Context, task models.Task) mod
 		log.Fatal(sResult)
 	}
 
-	return insertedTask
+	return insertedTask, nil
 }
