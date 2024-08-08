@@ -1,5 +1,7 @@
 # Task API Documentation
 
+# Tasks
+
 ## Get All Tasks
 
 ### Request
@@ -15,13 +17,19 @@
 ```json
 [
   {
-    "id": 1,
+    "id": "63e4d8b9f03d3b4b981f5e1c",
+    "user_id": "63e4d8b9f03d3b4b981f5e1d",
     "title": "Task 1",
+    "description": "This is the description for Task 1",
+    "datetime": "2023-02-08T12:34:56.789Z",
     "done": false
   },
   {
-    "id": 2,
+    "id": "63e4d8b9f03d3b4b981f5e1e",
+    "user_id": "63e4d8b9f03d3b4b981f5e1d",
     "title": "Task 2",
+    "description": "This is the description for Task 2",
+    "datetime": "2023-02-09T10:11:12.345Z",
     "done": true
   }
 ]
@@ -33,7 +41,7 @@
 
 `GET /tasks/:id`
 
-**Path Parameters:** - `id` (integer, required): The ID of the task to retrieve.
+**Path Parameters:** - `id` (string, required): The ID of the task to retrieve.
 
 ### Response
 
@@ -43,8 +51,11 @@
 
 ```json
 {
-  "id": 1,
+  "id": "63e4d8b9f03d3b4b981f5e1c",
+  "user_id": "63e4d8b9f03d3b4b981f5e1d",
   "title": "Task 1",
+  "description": "This is the description for Task 1",
+  "datetime": "2023-02-08T12:34:56.789Z",
   "done": false
 }
 ```
@@ -75,13 +86,16 @@
 
 `PUT /tasks/:id`
 
-**Path Parameters:** - `id` (integer, required): The ID of the task to retrieve.
+**Path Parameters:** - `id` (string, required): The ID of the task to update.
 
 **Request Body:**
 
 ```json
 {
+  "user_id": "63e4d8b9f03d3b4b981f5e1d",
   "title": "Updated Task 1",
+  "description": "This is the updated description for Task 1",
+  "datetime": "2023-02-08T12:34:56.789Z",
   "done": true
 }
 ```
@@ -94,8 +108,11 @@
 
 ```json
 {
-  "id": 1,
+  "id": "63e4d8b9f03d3b4b981f5e1c",
+  "user_id": "63e4d8b9f03d3b4b981f5e1d",
   "title": "Updated Task 1",
+  "description": "This is the updated description for Task 1",
+  "datetime": "2023-02-08T12:34:56.789Z",
   "done": true
 }
 ```
@@ -126,7 +143,7 @@
 
 `DELETE /tasks/:id`
 
-**Path Parameters:** - `id` (integer, required): The ID of the task to retrieve.
+**Path Parameters:** - `id` (string, required): The ID of the task to delete.
 
 ### Response
 
@@ -170,8 +187,12 @@
 
 ```json
 {
+  "id": "63e4d8b9f03d3b4b981f5e1c",
+  "user_id": "63e4d8b9f03d3b4b981f5e1d",
   "title": "New Task",
-  "done": false
+  "description": "This is a new task",
+  "datetime": "2023-02-08T12:34:56.789Z",
+  "done": true
 }
 ```
 
@@ -183,8 +204,11 @@
 
 ```json
 {
-  "id": 3,
+  "id": "63e4d8b9f03d3b4b981f5e1f",
+  "user_id": "63e4d8b9f03d3b4b981f5e1d",
   "title": "New Task",
+  "description": "This is a new task",
+  "datetime": "2023-02-10T08:15:22.567Z",
   "done": false
 }
 ```
@@ -196,5 +220,127 @@
 ```json
 {
   "error": "Invalid request body"
+}
+```
+
+# Authentication
+
+## Login
+
+### Request
+
+`POST /login`
+
+**Request Body:**
+
+```json
+{
+  "username": "user123",
+  "password": "password123"
+}
+```
+
+### Response
+
+**Status Code:** 202 Accepted
+
+**Response Body:**
+
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YjQ3ZWY1ZTk1ZDJlYTQzZTk2NzIyMCIsInVzZXJuYW1lIjoiaGVsbG8ifQ.zNoJB8Dq1OB8hp31bvVJXnT0mIvdPZgvRu6H3HHa0Yg"
+}
+```
+
+**Status Code:** 400 Bad Request
+
+**Response Body:**
+
+```json
+{
+  "error": "invalid credentials"
+}
+```
+
+## Promote
+
+### Request
+
+`POST /promote`
+
+**Request Body:**
+
+```json
+{
+  "username": "user123"
+}
+```
+
+### Response
+
+**Status Code:** 202 Accepted
+
+**Response Body:**
+
+```json
+{
+  "message": "user promoted succesfuly"
+}
+```
+
+**Status Code:** 400 Bad Request
+
+**Response Body:**
+
+```json
+{
+  "error": "user is already promoted"
+}
+```
+
+**Status Code:** 400 Bad Request
+
+**Response Body:**
+
+```json
+{
+  "error": "user not found"
+}
+```
+
+## Register
+
+### Request
+
+`POST /register`
+
+**Request Body:**
+
+```json
+{
+  "username": "user123",
+  "password": "password123"
+}
+```
+
+### Response
+
+**Status Code:** 202 Accepted
+
+**Response Body:**
+
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YjQ3ZWY1ZTk1ZDJlYTQzZTk2NzIyMCIsInVzZXJuYW1lIjoiaGVsbG8ifQ.zNoJB8Dq1OB8hp31bvVJXnT0mIvdPZgvRu6H3HHa0Yg"
+}
+```
+
+**Status Code:** 400 Bad Request
+
+**Response Body:**
+
+```json
+{
+  "error": "user is already promoted"
 }
 ```
