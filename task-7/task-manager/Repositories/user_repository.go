@@ -11,6 +11,7 @@ import (
 
 type UserRepository interface {
 	GetUserByID(ctx context.Context, id string) (*domain.User, error)
+	GetUserByUsername(ctx context.Context, username string) (*domain.User, error)
 	CreateUser(ctx context.Context, user domain.User) (string, error)
 	UpdateUser(ctx context.Context, id string, user domain.User) error
 }
@@ -37,6 +38,23 @@ func (s *MongoUserRepository) GetUserByID(ctx context.Context, id string) (*doma
 
 	var user domain.User
 	err = collection.FindOne(ctx, bson.D{{Key: "_id", Value: userObjectId}}).Decode(&user)
+
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, domain.ErrUserNotFound
+		} else {
+			return nil, err
+		}
+	}
+
+	return &user, nil
+}
+
+func (s *MongoUserRepository) GetUserByUsername(ctx context.Context, username string) (*domain.User, error) {
+	collection := s.db.Collection(s.collection)
+
+	var user domain.User
+	err := collection.FindOne(ctx, bson.D{{Key: "username", Value: username}}).Decode(&user)
 
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
