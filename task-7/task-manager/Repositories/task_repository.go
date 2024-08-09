@@ -124,8 +124,9 @@ func (s *MongoTaskRepository) UpdateTask(ctx context.Context, id string, task do
 	}
 
 	collection := s.db.Collection(s.collection)
+	filter := bson.D{{Key: "_id", Value: taskObjectId}}
 
-	updateResult, err := collection.ReplaceOne(ctx, bson.D{{Key: "_id", Value: taskObjectId}}, task)
+	updateResult, err := collection.ReplaceOne(ctx, filter, task)
 
 	if updateResult.MatchedCount == 0 {
 		return domain.ErrTaskNotFound

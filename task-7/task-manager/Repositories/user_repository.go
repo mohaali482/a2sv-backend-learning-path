@@ -10,6 +10,7 @@ import (
 )
 
 type UserRepository interface {
+	GetUsersCount(ctx context.Context) (int64, error)
 	GetUserByID(ctx context.Context, id string) (*domain.User, error)
 	GetUserByUsername(ctx context.Context, username string) (*domain.User, error)
 	CreateUser(ctx context.Context, user domain.User) (string, error)
@@ -26,6 +27,11 @@ func NewMongoUserRepository(db *mongo.Database, collection string) *MongoUserRep
 		db:         db,
 		collection: collection,
 	}
+}
+
+func (s *MongoUserRepository) GetUsersCount(ctx context.Context) (int64, error) {
+	collection := s.db.Collection(s.collection)
+	return collection.EstimatedDocumentCount(ctx)
 }
 
 func (s *MongoUserRepository) GetUserByID(ctx context.Context, id string) (*domain.User, error) {
