@@ -15,8 +15,8 @@ type TaskRepository interface {
 	GetUserTasks(ctx context.Context, userId string) []*domain.Task
 	GetUserTaskById(ctx context.Context, id string, userId string) (*domain.Task, error)
 	GetTaskById(ctx context.Context, id string) (*domain.Task, error)
-	CreateTask(ctx context.Context, task domain.Task) (*domain.Task, error)
-	UpdateTask(ctx context.Context, id string, task domain.Task) (*domain.Task, error)
+	CreateTask(ctx context.Context, task domain.Task) (string, error)
+	UpdateTask(ctx context.Context, id string, task domain.Task) error
 	DeleteTask(ctx context.Context, id string) error
 }
 
