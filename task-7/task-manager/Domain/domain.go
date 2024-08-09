@@ -16,7 +16,7 @@ type User struct {
 
 	Username string `json:"username,omitempty" bson:"username,omitempty"`
 	Password string `json:"password,omitempty" bson:"password,omitempty"`
-	Role     int    `json:"role,omitempty" bson:"role,omitempty"`
+	Role     int    `json:"role,omitempty" bson:"role"`
 }
 
 func (u *User) GetRole() string {
