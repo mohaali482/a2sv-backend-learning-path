@@ -36,5 +36,5 @@ type Task struct {
 	Title       string             `json:"title,omitempty" bson:"title,omitempty"`
 	Description string             `json:"description,omitempty" bson:"description,omitempty"`
 	DateTime    time.Time          `json:"datetime,omitempty" bson:"datetime,omitempty"`
-	Done        bool               `json:"done,omitempty" bson:"done,omitempty"`
+	Done        bool               `json:"done" bson:"done,omitempty"`
 }
